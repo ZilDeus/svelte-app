@@ -1,5 +1,5 @@
 <script>
-  import ItemViewer from "$lib/ItemViewer.svelte";
+  import ItemViewer from "../../lib/ItemViewer.svelte";
 
 </script>
 

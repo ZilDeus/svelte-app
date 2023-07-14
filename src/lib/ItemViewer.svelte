@@ -1,5 +1,5 @@
 <script>
-  import Dropdown from "$lib/Dropdown.svelte";
+  import Dropdown from "../lib/Dropdown.svelte";
   import Input from "./Input.svelte";
   import Button from "./Button.svelte";
   import axios from "axios";

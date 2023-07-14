@@ -1,5 +1,5 @@
 <script>
-  import SignUpForm from "$lib/SignUpForm.svelte";
+  import SignUpForm from "../../lib/SignUpForm.svelte";
 </script>
 
 <h1 class="text-2xl font-semibold text-center">صناعة حساب</h1>

@@ -1,5 +1,5 @@
 <script>
-  import SignInForm from "$lib/SignInForm.svelte";
+  import SignInForm from "../lib/SignInForm.svelte";
 </script>
 
 <h1 class="text-2xl font-semibold text-center">تسجيل دخول</h1>

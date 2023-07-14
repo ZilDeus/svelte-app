@@ -1,6 +1,5 @@
 import axios from 'axios'
 import {redirect} from '@sveltejs/kit'
-import {user,items} from '$lib/../store.js'
 export async function load({ cookies }) {
     const res = await axios({
       method:"POST",

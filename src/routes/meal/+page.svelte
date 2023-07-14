@@ -1,7 +1,7 @@
 <script>
   import axios from "axios";
-  import Button from "$lib/Button.svelte";
-  import ItemViewer from "$lib/ItemViewer.svelte";
+  import Button from "../../lib/Button.svelte";
+  import ItemViewer from "../../lib/ItemViewer.svelte";
   import Input from "../../lib/Input.svelte";
   let viewItems = false;
   export let data;
