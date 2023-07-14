@@ -9,7 +9,7 @@
     return password.length<=0 || confirmPassword !== password;
   }
 </script>
-<form class="space-y-5 {$$props.class}">
+<form method="post" class="space-y-5 {$$props.class}">
   <Input
     label="Email"
     id="email"
