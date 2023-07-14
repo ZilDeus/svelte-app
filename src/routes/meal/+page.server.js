@@ -9,7 +9,7 @@ export async function load({ cookies }) {
     const sessionid = await cookies.get('session_id');
     if (sessionid === undefined)
     {
-      throw redirect(301,'/sign-in')
+      throw redirect(301,'/')
     }
     else
     {
@@ -18,7 +18,7 @@ export async function load({ cookies }) {
       url:"https://gobackend2-zildeus.b4a.run/get-user",
       headers:{key:String("1202"),id:String(sessionid)},
     }).catch(() => {
-      throw redirect(301,"/sign-in");
+      throw redirect(301,"/");
     })
       if(res)
       {
