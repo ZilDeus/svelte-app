@@ -70,6 +70,9 @@ export const actions = {
       let selectedMeal = await userData.Meals[mealIndex];
 
 
+      if(!selectedMeal.Dishes)
+        selectedMeal.Dishes = Array();
+
       selectedMeal.Dishes.push({
           Name: item.Name,
           Cratio: item.Cratio,
@@ -89,6 +92,7 @@ export const actions = {
         },
       });
     },
+
     removeMeal: async (event) => {
       const mealName = event.url.searchParams.get("mealName");
       const user = event.cookies.get("session_id");
