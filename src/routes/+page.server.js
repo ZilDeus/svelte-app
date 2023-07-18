@@ -1,12 +1,14 @@
 import { redirect } from "@sveltejs/kit";
 import axios from 'axios';
+import {API_URL,API_KEY} from "$env/static/private";
 
 export async function load({ cookies }) {
     const res = await axios({
       method:"POST",
-      url: "https://gobackend2-zildeus.b4a.run/start",
+      url: API_URL+"/start",
       }).catch(()=>{ throw redirect(301,"/404")})
 }
+
 export const actions = {
   default: async ({ request, cookies }) => {
     const form = await request.formData();
@@ -20,9 +22,9 @@ export const actions = {
     const response = await axios(
       {
         method:"POST",
-        url:"https://gobackend2-zildeus.b4a.run/sign-in",
+        url:API_URL+"/sign-in",
         data:{email:email,password:password},
-        headers:{key:String("1202")},
+        headers:{key:API_KEY},
       }).catch((res)=>{
       console.log(res.status + "::" + "email and or password are incorrect");
       throw redirect(303, "/");
@@ -35,7 +37,7 @@ export const actions = {
         httpOnly: true,
         sameSite: "strict",
         secure: true,
-        maxAge: 60 * 60 * 24 * 7, // one week
+        maxAge: 60 * 60 * 24 * 7,
       });
     }
   },

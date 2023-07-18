@@ -1,6 +1,6 @@
 <script>
   import ItemViewer from "../../lib/ItemViewer.svelte";
-
+  export let data;
 </script>
 
 <dialog close id="meals-dialog" class="absolute  mx-auto border-2 bg-slate-900 bg-opacity-90 top-1/3">
@@ -9,4 +9,4 @@
   </div>
 </dialog>
 <div class="block mt-32"/>
-<ItemViewer/>
+<ItemViewer menuItems={data.items}/>

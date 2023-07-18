@@ -25,6 +25,7 @@
 			{name}
 			{id}
 			{required}
+      step="0.1"
 			bind:value
       on:change={onChange}
       on:input={onInput}

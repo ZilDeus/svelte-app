@@ -1,4 +1,5 @@
 import { redirect } from "@sveltejs/kit";
+import { API_URL,API_KEY } from "$env/static/private"
 import axios from 'axios';
 
 export const actions = {
@@ -13,7 +14,7 @@ export const actions = {
     const response = await axios(
       {
         method:"POST",
-        url:"https://gobackend2-zildeus.b4a.run/add_item_8",
+        url:API_URL+"/add_item_8",
         data:{name:String(name),cratio:parseFloat(cRatio),pratio:parseFloat(pRatio),unit:String(unit)},
         headers:{key:String("1202")},
       }).catch((res)=>{

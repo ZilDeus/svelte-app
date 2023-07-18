@@ -1,11 +1,8 @@
 <script>
   import Dropdown from "../lib/Dropdown.svelte";
   import Input from "./Input.svelte";
-  import Button from "./Button.svelte";
-  import axios from "axios";
-  import { onMount } from "svelte";
 
-  export let extraButton = null;
+  export let menuItems = null;
 
   var calories = 100;
   var protien = 100;
@@ -17,7 +14,6 @@
   var isSelected = false;
   var selectedItem;
   var itemName = "";
-  var menuItems;
 
   const selectItemCallback = (item) => {
     isSelected = true;
@@ -25,21 +21,10 @@
     itemName = item.Name;
     Cratio = item.Cratio;
     Pratio = item.Pratio;
-    amount = (100/Cratio).toFixed(1);
+    amount = item.Unit.length<=3?100:1;
     calories = (amount * Cratio).toFixed(1);
     protien = (amount * Pratio).toFixed(1);
   };
-
-  onMount(async () => {
-    try {
-      const res = await axios({
-        method: "POST",
-        url: "https://gobackend2-zildeus.b4a.run/get-items",
-        headers: { key: String("1202") },
-      });
-      menuItems = res.data;
-    } catch {}
-  });
 </script>
 
 <Dropdown {menuItems} callback={selectItemCallback} />
@@ -47,10 +32,18 @@
   <dev class="block text-center my-5 space-y-5 mx-auto w-80">
     <h2 class="text-indigo-600">{itemName}</h2>
     <Input
+      class="hidden"
+      label={null}
+      name="item-name"
+      type="text"
+      value={itemName}
+    />
+
+    <Input
       class="text-black"
       label="calories"
       id="calories"
-      name="calories"
+      name="item-calories"
       type="number"
       bind:value={calories}
       onInput={(e) => {
@@ -65,7 +58,7 @@
       class="text-black"
       label="protien"
       id="protien"
-      name="protien"
+      name="item-protien"
       type="number"
       bind:value={protien}
       onInput={(e) => {
@@ -80,7 +73,7 @@
       class="text-black"
       label="amount in ({selectedItem.Unit})"
       id="amount"
-      name="amount"
+      name="item-amount"
       type="number"
       bind:value={amount}
       onInput={(e) => {
@@ -90,11 +83,6 @@
         protien = (amount * Pratio).toFixed(1);
       }}
     />
-
-    {#if extraButton !== null}
-      <Button onClick={() => {selectedItem.Amount = amount;extraButton.callback(selectedItem)}}>
-        {extraButton.name}
-      </Button>
-    {/if}
+    <slot/>
   </dev>
 {/if}
