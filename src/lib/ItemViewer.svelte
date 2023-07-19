@@ -64,7 +64,7 @@
     <br/>
     <Slider InitialValue={protien} Name="بروتين" Unit="g" Max=1000  onChange={(e)=>{protien = e; amount = (protien / Pratio).toFixed(1); calories = (amount * Cratio).toFixed(1);}}/>
     <br/>
-    <Slider InitialValue={amount} Name="كمية" Unit={selectedItem.Unit} Max=1000 onChange={(e)=>{amount = e; calories = (amount * Cratio).toFixed(1); protien = (amount * Pratio).toFixed(1); }}/>
+    <Slider InitialValue={amount} Name="كمية" Unit={selectedItem.Unit} Max={selectedItem.Unit.length > 3 ? 20:1000} onChange={(e)=>{amount = e; calories = (amount * Cratio).toFixed(1); protien = (amount * Pratio).toFixed(1); }}/>
     <br/>
     <slot/>
   </dev>
