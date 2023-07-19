@@ -25,9 +25,9 @@ export const actions = {
         url:API_URL+"/sign-in",
         data:{email:email,password:password},
         headers:{key:API_KEY},
-      }).catch((res)=>{
-      console.log(res.status + "::" + "email and or password are incorrect");
-      throw redirect(303, "/");
+      }).catch(()=>{
+      console.log("email and or password are incorrect");
+      throw redirect(303, "/?success=false");
       });
     console.log(response.data);
     if(response.status == 200)
@@ -39,6 +39,7 @@ export const actions = {
         secure: true,
         maxAge: 60 * 60 * 24 * 7,
       });
+      throw redirect(303,"/?success=true");
     }
   },
 };

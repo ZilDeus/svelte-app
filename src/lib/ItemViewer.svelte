@@ -1,4 +1,5 @@
 <script>
+  import Slider from "../lib/Slider.svelte"
   import Dropdown from "../lib/Dropdown.svelte";
   import Input from "./Input.svelte";
 
@@ -38,51 +39,33 @@
       type="text"
       value={itemName}
     />
-
     <Input
-      class="text-black"
-      label="calories"
-      id="calories"
+      class="hidden"
+      label={null}
       name="item-calories"
-      type="number"
-      bind:value={calories}
-      onInput={(e) => {
-        if(e.target.value.length === 0) e.target.value = "1"
-        calories = parseFloat(e.target.value);
-        amount = (calories / Cratio).toFixed(1);
-        protien = (amount * Pratio).toFixed(1);
-      }}
+      type="text"
+      value={calories}
     />
-
     <Input
-      class="text-black"
-      label="protien"
-      id="protien"
+      class="hidden"
+      label={null}
       name="item-protien"
-      type="number"
-      bind:value={protien}
-      onInput={(e) => {
-        if(e.target.value.length === 0) e.target.value = "1"
-        protien = parseFloat(e.target.value);
-        amount = (protien / Pratio).toFixed(1);
-        calories = (amount * Cratio).toFixed(1);
-      }}
+      type="text"
+      value={protien}
     />
-
     <Input
-      class="text-black"
-      label="amount in ({selectedItem.Unit})"
-      id="amount"
+      class="hidden"
+      label={null}
       name="item-amount"
-      type="number"
-      bind:value={amount}
-      onInput={(e) => {
-        if(e.target.value.length === 0) e.target.value = "1"
-        amount = parseFloat(e.target.value);
-        calories = (amount * Cratio).toFixed(1);
-        protien = (amount * Pratio).toFixed(1);
-      }}
+      type="text"
+      value={amount}
     />
+    <Slider InitialValue={calories} Name="سعرات" Unit="Kcal" Max=1000 onChange={(e)=>{calories = e; amount = (calories / Cratio).toFixed(1); protien = (amount * Pratio).toFixed(1); }}/>
+    <br/>
+    <Slider InitialValue={protien} Name="بروتين" Unit="g" Max=1000  onChange={(e)=>{protien = e; amount = (protien / Pratio).toFixed(1); calories = (amount * Cratio).toFixed(1);}}/>
+    <br/>
+    <Slider InitialValue={amount} Name="كمية" Unit={selectedItem.Unit} Max=1000 onChange={(e)=>{amount = e; calories = (amount * Cratio).toFixed(1); protien = (amount * Pratio).toFixed(1); }}/>
+    <br/>
     <slot/>
   </dev>
 {/if}
