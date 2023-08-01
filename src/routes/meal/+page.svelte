@@ -6,6 +6,7 @@
   let viewItems = false;
   export let data;
   let user = data.user;
+  let items = data.items;
   let MealSelected = false;
   let addedMealName = "";
   let addedMealDesc = "";
@@ -15,7 +16,7 @@
     if (!meal.Dishes || meal.Dishes.length <= 0) return 0;
     let sum = 0;
     meal.Dishes.forEach((element) => {
-      sum = sum + element.Cratio * element.Amount;
+      sum = sum + items.filter(item => item.Id == element.Item)[0].Cratio * element.Amount;
     });
     return sum.toFixed(1);
   };
@@ -23,7 +24,7 @@
     if (!meal.Dishes || meal.Dishes.length <= 0) return 0;
     let sum = 0;
     meal.Dishes.forEach((element) => {
-      sum = sum + element.Pratio * element.Amount;
+      sum = sum + items.filter(item => item.Id == element.Item)[0].Pratio * element.Amount;
     });
     return sum.toFixed(1);
   };
@@ -88,7 +89,7 @@
     {#if selectedMeal.Dishes && selectedMeal.Dishes.length > 0}
       {#each selectedMeal.Dishes as dish, i}
         <button type="submit" formaction={`?/removeItem&mealIndex=${selectedMeal.Index}&itemIndex=${i}`}>
-        {dish.Name}
+        {items.filter(item => item.Id == dish.Item)[0].Name}
         </button>
       {/each}
     {/if}
@@ -138,10 +139,10 @@
             <h2
               class="p-3 float-left border-collapse border-black border-r-2 border-b-2"
             >
-              {dish.Name}
+              {items.filter(item => item.Id == dish.Item)[0].Name}
             </h2>
             <h2 class="p-3 float-righ border-collapse border-black border-b-2">
-              {dish.Amount.toFixed(1)}({dish.Unit})
+              {dish.Amount}({items.filter(item => item.Id == dish.Item)[0].Unit})
             </h2>
           {/each}
         {/if}

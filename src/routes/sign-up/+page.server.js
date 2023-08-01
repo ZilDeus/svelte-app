@@ -1,6 +1,7 @@
 import { redirect } from "@sveltejs/kit";
-import {API_URL} from "$env/static/private";
-import axios from 'axios';
+import { sql} from "drizzle-orm";
+import { db } from "$lib/server/db.js";
+import { users } from "$lib/server/schema.js";
 
 export const actions = {
   default: async ({ request, cookies }) => {
@@ -12,17 +13,14 @@ export const actions = {
     }
     console.log(email + " ::: " + password);
 
-    const response = await axios(
-      {
-        method:"POST",
-        url: API_URL+"/sign-up",
-        data:{email:email,password:password},
-        headers:{key:String("1202")},
-      }).catch((res)=>{
-      console.log(res.status + "::" + "email is already in use");
-      throw redirect(303, "/");
-      });
-    console.log(response.data);
-    throw redirect(303,"/");
+    const user = await db.select().from(users).where(sql`${users.Email} = ${email}`);
+    if(user.length != 0)
+    {
+      throw redirect(303,"/sign-up/?success=false");
+    }
+
+    await db.insert(users).values({Email: email , Password:password});
+
+    throw redirect(303, "/");
   },
 };

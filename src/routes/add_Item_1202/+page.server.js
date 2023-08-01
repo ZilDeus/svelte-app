@@ -1,6 +1,7 @@
 import { redirect } from "@sveltejs/kit";
-import { API_URL,API_KEY } from "$env/static/private"
-import axios from 'axios';
+import { sql} from "drizzle-orm";
+import { db } from "$lib/server/db.js";
+import { items } from "$lib/server/schema.js";
 
 export const actions = {
 
@@ -10,17 +11,6 @@ export const actions = {
     const cRatio = form.get("Cratio");
     const pRatio = form.get("Pratio");
     const unit = form.get("unit");
-
-    const response = await axios(
-      {
-        method:"POST",
-        url:API_URL+"/add_item_8",
-        data:{name:String(name),cratio:parseFloat(cRatio),pratio:parseFloat(pRatio),unit:String(unit)},
-        headers:{key:String("1202")},
-      }).catch((res)=>{
-      console.log(res.status + "::" + "item could not be creted");
-      throw redirect(303, "/");
-      });
-    console.log(response.data);
+    await db.insert(items).values({Name:name,Cratio:cRatio,Pratio:pRatio,Unit:unit});
   },
 };

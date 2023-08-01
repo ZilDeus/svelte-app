@@ -1,44 +1,20 @@
-import axios from 'axios'
 import {redirect} from '@sveltejs/kit'
-import {API_URL,API_KEY} from "$env/static/private"
+import { db } from "$lib/server/db.js";
+import { sql , eq} from "drizzle-orm";
+import { users,items } from "$lib/server/schema.js";
 let userData;
-let items;
-export async function load({ cookies }) {
-    const res = await axios({
-      method:"POST",
-      url:API_URL+"/start",
-      }).catch(()=>{ throw redirect(301,"/404")})
-
+let allItems;
+export async function load({ cookies }){
     const sessionid = await cookies.get('session_id');
-    if (sessionid === undefined)
+    if (sessionid == undefined)
     {
       throw redirect(301,'/')
     }
     else
     {
-    const userRes = await axios({
-      method:"POST",
-      url:API_URL+"/get-user",
-      headers:{key:API_KEY,id:String(sessionid)},
-    }).catch(() => {
-      throw redirect(301,"/");
-    })
-    const itemsRes = await axios({
-      method:"POST",
-      url:API_URL+"/get-items",
-      headers:{key:API_KEY},
-    }).catch(() => {
-      throw redirect(301,"/");
-    })
-      if(res)
-      {
-        userData = await userRes.data;
-        items = await itemsRes.data;
-        return {
-          user: userRes.data,
-          items: itemsRes.data,
-        }
-      }
+      userData = await db.select().from(users).where(sql`${users.Id} = ${sessionid}`);
+      allItems = await db.select().from(items);
+        return { user: userData[0], items: allItems, }
     }
 }
 export const actions = {
@@ -46,84 +22,49 @@ export const actions = {
       const data = await event.request.formData();
       const mealName = data.get("meal-name");
       const mealDesc = data.get("meal-desc");
-      const user = await event.cookies.get("session_id");
-
-    const res = await axios({
-      method:"POST",
-      url:API_URL+"/add-meal",
-      headers:{key:API_KEY,id:String(user)},
-      data: { name: mealName, description: mealDesc},
-    }).catch(() => {
-      throw redirect(301,"/");
-    })
+      userData[0].Meals.push({Name:mealName,Description:mealDesc,Dishes:[]});
+      await db.update(users).set({Meals:userData[0].Meals}).where(eq(users.Id,userData[0].Id));
     },
     addItem: async (event) => {
       const data = await event.request.formData();
       const itemName = data.get("item-name");
       const itemAmount = data.get("item-amount");
       const mealIndex = event.url.searchParams.get("mealIndex");
-      const user = await event.cookies.get("session_id");
-      const item = items.find((item) => {
+      const item = allItems.find((item) => {
         return item.Name === itemName;
       })
 
-      let selectedMeal = await userData.Meals[mealIndex];
+
+      let selectedMeal = userData[0].Meals[mealIndex];
 
 
       if(!selectedMeal.Dishes)
         selectedMeal.Dishes = Array();
 
       selectedMeal.Dishes.push({
-          Name: item.Name,
-          Cratio: item.Cratio,
-          Pratio: item.Pratio,
+          Item:item.Id,
           Amount: parseFloat(itemAmount),
-          Unit: item.Unit,
       });
-      
-      await axios({
-        method: "POST",
-        url: API_URL+"/update-meal",
-        headers: { key: API_KEY, id: String(user)},
-        data: {
-          name: selectedMeal.Name,
-          Description: selectedMeal.Description,
-          Dishes: selectedMeal.Dishes,
-        },
-      });
+
+      userData[0].Meals[mealIndex] = selectedMeal;
+
+      await db.update(users).set({Meals:userData[0].Meals}).where(eq(users.Id,userData[0].Id));
     },
 
     removeMeal: async (event) => {
       const mealName = event.url.searchParams.get("mealName");
-      const user = event.cookies.get("session_id");
-    await axios({
-      method: "POST",
-      url: API_URL+"/rem-meal",
-      headers: { key: API_KEY, id: String(user)},
-      data: {name: mealName},
-    }).catch((res) => {
-      console.log(res);
-      throw redirect(301,"/");
-    })
+      const remIndex = userData[0].Meals.findIndex((meal) => meal.Name == mealName);
+      console.log(userData[0].Meals.length);
+      userData[0].Meals.splice(remIndex,1);
+      console.log(userData[0].Meals.length);
+      await db.update(users).set({Meals:userData[0].Meals}).where(eq(users.Id,userData[0].Id));
     },
     removeItem: async (event) => {
       const mealIndex = event.url.searchParams.get("mealIndex");
       const itemIndex = event.url.searchParams.get("itemIndex");
-      const user = await event.cookies.get("session_id");
-      let selectedMeal = await userData.Meals[mealIndex];
 
+      userData[0].Meals[mealIndex].Dishes.splice(itemIndex,1);
 
-      selectedMeal.Dishes.splice(itemIndex,1);
-      
-      await axios({
-        method: "POST",
-        url: API_URL+"/update-meal",
-        headers: { key: API_KEY, id: String(user)},
-        data: {
-          name: selectedMeal.Name,
-          Description: selectedMeal.Description,
-          Dishes: selectedMeal.Dishes,
-        },
-      });
+      await db.update(users).set({Meals:userData[0].Meals}).where(eq(users.Id,userData[0].Id));
     },
 };
