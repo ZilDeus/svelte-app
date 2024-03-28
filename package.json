@@ -23,7 +23,7 @@
   "dependencies": {
     "@sveltejs/adapter-static": "^2.0.2",
     "drizzle-orm": "^0.27.2",
-    "postgres": "^3.3.5",
+    "postgres": "^3.4.3",
     "uuid": "^9.0.0"
   }
 }
